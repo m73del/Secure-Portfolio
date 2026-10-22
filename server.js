@@ -1,3 +1,6 @@
+const jwt = require('jsonwebtoken');
+const JWT_SECRET = 'SuperSecretKeyForJWT2026!@#'
+
 const express = require('express');
 const cors = require('cors');
 
@@ -34,10 +37,15 @@ app.post('/api/login', (req, res) => {
     }
 
     if (email === mockUser.email && password === mockUser.password) {
-        return res.status(200).json({
-            message: "تم تسجيل الدخول بنجاح!",
-            user: { email: mockUser.email }
-        });
+        const token = jwt.sign(
+    { email: mockUser.email },
+    JWT_SECRET,
+    { expiresIn: '1h' }
+);
+return res.status(200).json({
+    message: "تم تسجيل الدخول بنجاح",
+    token: token
+});
     } else {
         return res.status(401).json({ message: "البريد الإلكتروني أو كلمة السر غير صحيحة" });
     }
